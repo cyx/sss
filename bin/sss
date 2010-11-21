@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+help = <<-EOS
+SSS(1)
+
+NAME
+      sss -- Copy files to your S3 buckets.
+
+SYNOPSIS
+      sss -f file -k key bucket1 [bucket2 ...]
+
+DESCRIPTION
+      Sss is a simple command line Ruby utility that allows you to copy
+      file to your Amazon S3 buckets.
+
+      The following options are available:
+
+      -f file
+          Specify a file to be copied.
+
+      -k key
+          Specify the key to be used for storing in S3. By default it uses
+          the file's basename, so if you have the file /foo/bar/baz.tgz, the
+          key is baz.tgz.
+
+USAGE
+      To send a single file `/tmp/filename.tgz` to a single bucket `mybucket`:
+      
+          $ sss -f /tmp/filename.tgz mybucket
+
+      If you wish to send multiple files to a single bucket:
+
+          $ sss -f /tmp/file1.tgz /tmp/file2.tgz mybucket
+
+      If you wish to send to multiple buckets in one go:
+
+          $ sss -f /tmp/file1.tgz mybucket1 mybucket2
+
+EOS
+
+require "clap"
+require File.expand_path("../lib/sss", File.dirname(__FILE__))
+
+begin
+  sss = Sss.new
+
+  buckets = Clap.run ARGV,
+    "-f" => sss.method(:add_file),
+    "-k" => sss.method(:use_key),
+    "--access" => sss.method(:access),
+    "--cache-control" => sss.method(:cache_control)
+
+  sss.upload(buckets)
+rescue Sss::NoBuckets, Sss::NoFiles
+  puts help
+end
