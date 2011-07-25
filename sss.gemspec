@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = 'sss'
-  s.version = "0.0.1"
+  s.version = "0.0.2"
   s.summary = %{Simple CLI interface for copying files to S3.}
-  s.date = "2010-11-21"
+  s.date = "2011-07-26"
   s.author = "Cyril David"
   s.email = "cyx@pipetodevnull.com"
   s.homepage = "http://github.com/cyx/sss"
